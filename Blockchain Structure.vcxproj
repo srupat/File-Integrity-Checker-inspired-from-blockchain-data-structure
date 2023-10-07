@@ -127,8 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Blockchain Structure.cpp" />
-    <ClCompile Include="FileHashing.cpp" />
+    <ClCompile Include="blockchainStructure.cpp" />
     <ClCompile Include="Merkle.cpp" />
   </ItemGroup>
   <ItemGroup>

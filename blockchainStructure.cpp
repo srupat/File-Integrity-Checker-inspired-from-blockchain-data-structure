@@ -1,13 +1,37 @@
-#include"Merkle.h"
 #define _CRT_SECURE_NO_WARNINGS
+#include"Merkle.h"
+#include<stdio.h>
+
 
 typedef struct block {
     int numTransactions;
-    int* transactions;  
+    int* transactions;
+    char** FileHashes;
     int prevHash;
     int currentHash;
     struct block* link;
 }block;
+
+// Function to calculate the hash value of a file
+int calculate_file_hash(const char* file_path) {
+    FILE* file;
+    if (fopen_s(&file, file_path, "rb") != 0) {
+        perror("Error opening file");
+        exit(1);
+    }
+
+    int hash_value = 0;
+    int c;
+
+    while ((c = fgetc(file)) != EOF) {
+        hash_value = (hash_value * 31) + c; // A simple hash function
+    }
+
+    fclose(file);
+
+    return hash_value;
+}
+
 
 block* create_Block(block* T1, int num_transactions) {
     T1->numTransactions++;
@@ -20,6 +44,11 @@ block* create_Block(block* T1, int num_transactions) {
     block* new_block = (block*)malloc(sizeof(block));
     temp->link = new_block;
     new_block->link = NULL;
+
+    new_block->FileHashes = (char**)malloc(sizeof(char) * num_transactions);
+    for (int i = 0; i < num_transactions; i++) {
+        new_block->FileHashes[i] = (char*)malloc(sizeof(char) * 100);
+    }
 
     new_block->numTransactions = num_transactions;
     new_block->transactions = (int*)malloc(sizeof(int) * num_transactions);
@@ -34,10 +63,26 @@ void configure_block(block* T1, block* T) {
         temp = temp->link;
     }
     T->prevHash = temp->currentHash;
+    temp = T;
 
-    printf("Enter the integer values for transactions:\n");
+    printf("Enter the File Paths for transactions:\n");
     for (int i = 0; i < T->numTransactions; i++) {
-        scanf_s("%d", &(T->transactions[i]));
+        int size = sizeof(T->FileHashes[i]);
+        char buffer;
+        printf("Enter the file path: ");
+        scanf("%c", &buffer);
+        fgets(T->FileHashes[i], 100, stdin);
+        if (T->FileHashes[i] == NULL) {
+            perror("Error reading file path");
+        }
+
+        // Remove any trailing whitespace, including newline characters
+        size_t len = strlen(T->FileHashes[i]);
+        while (len > 0 && (T->FileHashes[i][len - 1] == '\n' || T->FileHashes[i][len - 1] == '\r')) {
+            T->FileHashes[i][--len] = '\0';
+        }
+
+        T->transactions[i] = calculate_file_hash(T->FileHashes[i]);
     }
 
     // Build the Merkle tree
@@ -55,6 +100,11 @@ void print_block(block* T) {
     printf("\nContents of created block...\n");
     printf("Previous Hash: %d\n", T->prevHash);
     printf("Current Hash : %d\n", T->currentHash);
+    printf("List of file paths : \n");
+    for (int i = 0; i < T->numTransactions; i++) {
+        printf("File path %d: %s\n", i + 1, T->FileHashes[i]);
+    }
+
     printf("Number of transactions : %d\n", T->numTransactions);
     printf("Transaction List...\n");
 
