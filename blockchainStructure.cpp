@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include"Merkle.h"
-#include<stdio.h>
-
+#include<iostream>
 
 typedef struct block {
     int numTransactions;
@@ -45,7 +44,7 @@ block* create_Block(block* T1, int num_transactions) {
     temp->link = new_block;
     new_block->link = NULL;
 
-    new_block->FileHashes = (char**)malloc(sizeof(char) * num_transactions);
+    new_block->FileHashes = (char**)malloc(sizeof(char*) * num_transactions);
     for (int i = 0; i < num_transactions; i++) {
         new_block->FileHashes[i] = (char*)malloc(sizeof(char) * 100);
     }
@@ -64,13 +63,14 @@ void configure_block(block* T1, block* T) {
     }
     T->prevHash = temp->currentHash;
     temp = T;
-
-    printf("Enter the File Paths for transactions:\n");
+    char c;
+    printf("Enter the File Paths for transactions:\n ");
     for (int i = 0; i < T->numTransactions; i++) {
         int size = sizeof(T->FileHashes[i]);
-        char buffer;
         printf("Enter the file path: ");
-        scanf("%c", &buffer);
+
+        while((c = getchar()) != 10) {}
+
         fgets(T->FileHashes[i], 100, stdin);
         if (T->FileHashes[i] == NULL) {
             perror("Error reading file path");
