@@ -16,7 +16,7 @@ typedef struct MerkleNode {
 MerkleNode* create_merkle_node(int data);
 
 // Function to calculate a simple hash (summation for simplicity)
-int simple_hash(int input1, int input2);
+uint64_t simple_hash(int input1, int input2);
 
 // Function to build a Merkle tree
 MerkleNode* build_merkle_tree(int* transactions, int start, int end);

@@ -1,4 +1,5 @@
 #include"Merkle.h"
+#include<stdint.h>
 
 MerkleNode* create_merkle_node(int data) {
     MerkleNode* node = (MerkleNode*)malloc(sizeof(MerkleNode));
@@ -13,8 +14,20 @@ MerkleNode* create_merkle_node(int data) {
 }
 
 // Function to calculate a simple hash (summation for simplicity)
-int simple_hash(int input1, int input2) {
-    return input1 + input2;
+int simple_hash(uint64_t input1, uint64_t input2) {
+        // Choose two large prime numbers (you can replace these with other primes)
+        uint64_t prime1 = 4294967311; // A large prime less than 2^32
+        uint64_t prime2 = 4294967357; // Another large prime less than 2^32
+
+        // Use a combination of multiplication, addition, and bitwise operations
+        uint64_t hash = ((input1 * prime1) + (input2 * prime2)) ^ ((input1 ^ input2) << 32);
+        
+        // Mix the bits for improved distribution
+        hash = (hash ^ (hash >> 33)) * 0xFF51AFD7ED558CCDull;
+        hash = (hash ^ (hash >> 33)) * 0xC4CEB9FE1A85EC53ull;
+        hash = hash ^ (hash >> 33);
+
+        return hash;
 }
 
 // Function to build a Merkle tree
@@ -40,7 +53,7 @@ MerkleNode* build_merkle_tree(int* transactions, int start, int end) {
 }
 
 // Function to calculate the Merkle root hash value
-int calculate_merkle_root(MerkleNode* root) {
+uint64_t calculate_merkle_root(MerkleNode* root) {
     return root->data;
 }
 

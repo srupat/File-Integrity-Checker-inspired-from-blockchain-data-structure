@@ -2,14 +2,14 @@
 #include"Merkle.h"
 #include<iostream>
 
-typedef struct block {
+struct block {
     int numTransactions;
     int* transactions;
     char** FileHashes;
-    int prevHash;
-    int currentHash;
+    uint64_t prevHash;
+    uint64_t currentHash;
     struct block* link;
-}block;
+};
 
 // Function to calculate the hash value of a file
 int calculate_file_hash(const char* file_path) {
@@ -19,7 +19,7 @@ int calculate_file_hash(const char* file_path) {
         exit(1);
     }
 
-    int hash_value = 0;
+    uint64_t hash_value = 0;
     int c;
 
     while ((c = fgetc(file)) != EOF) {
@@ -69,7 +69,7 @@ void configure_block(block* T1, block* T) {
         int size = sizeof(T->FileHashes[i]);
         printf("Enter the file path: ");
 
-        while((c = getchar()) != 10) {}
+        while ((c = getchar()) != 10) {}
 
         fgets(T->FileHashes[i], 100, stdin);
         if (T->FileHashes[i] == NULL) {
