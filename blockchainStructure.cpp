@@ -1,18 +1,19 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include"Merkle.h"
+#include"FileEntries.h"
 #include<iostream>
 
-struct block {
+typedef struct block {
     int numTransactions;
-    int* transactions;
+    uint64_t* transactions;
     char** FileHashes;
     uint64_t prevHash;
     uint64_t currentHash;
     struct block* link;
-};
+}Block;
 
 // Function to calculate the hash value of a file
-int calculate_file_hash(const char* file_path) {
+uint64_t calculate_file_hash(const char* file_path) {
     FILE* file;
     if (fopen_s(&file, file_path, "rb") != 0) {
         perror("Error opening file");
@@ -32,15 +33,15 @@ int calculate_file_hash(const char* file_path) {
 }
 
 
-block* create_Block(block* T1, int num_transactions) {
+Block* create_Block(Block* T1, int num_transactions) {
     T1->numTransactions++;
 
-    block* temp = T1;
+    Block* temp = T1;
 
     while (temp->link != NULL) {
         temp = temp->link;
     }
-    block* new_block = (block*)malloc(sizeof(block));
+    Block* new_block = (Block*)malloc(sizeof(Block));
     temp->link = new_block;
     new_block->link = NULL;
 
@@ -50,7 +51,7 @@ block* create_Block(block* T1, int num_transactions) {
     }
 
     new_block->numTransactions = num_transactions;
-    new_block->transactions = (int*)malloc(sizeof(int) * num_transactions);
+    new_block->transactions = (uint64_t*)malloc(sizeof(uint64_t) * num_transactions);
     new_block->currentHash = 0;
     new_block->prevHash = 0;
     return new_block;
@@ -98,8 +99,8 @@ void configure_block(block* T1, block* T) {
 void print_block(block* T) {
 
     printf("\nContents of created block...\n");
-    printf("Previous Hash: %d\n", T->prevHash);
-    printf("Current Hash : %d\n", T->currentHash);
+    printf("Previous Hash: %" PRIu64 "\n", T->prevHash);
+    printf("Current Hash : %" PRIu64 "\n", T->currentHash);
     printf("List of file paths : \n");
     for (int i = 0; i < T->numTransactions; i++) {
         printf("File path %d: %s\n", i + 1, T->FileHashes[i]);
@@ -154,10 +155,16 @@ int main() {
             int num_transactions;
             printf("Enter the number of transactions: ");
             scanf_s("%d", &num_transactions);
-
+            
             block* T = create_Block(T1, num_transactions);
             configure_block(T1, T);
             break;
+
+            //int num_files;
+            //printf("Enter the number of files: ");
+            //scanf_s("%d", &num_files);
+            //
+            //FileEntries** entries = create_Entries(num_files);
         }
 
     } while (choice);
