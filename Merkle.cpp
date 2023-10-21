@@ -60,7 +60,7 @@ uint64_t calculate_merkle_root(MerkleNode* root) {
 void print_merkle_tree(MerkleNode* node) {
     if (node != NULL) {
         print_merkle_tree(node->left);
-        printf("%d ", node->data);
+        printf("%" PRIu64" ", node->data);
         print_merkle_tree(node->right);
     }
 }

@@ -127,10 +127,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BlockChain.cpp" />
     <ClCompile Include="blockchainStructure.cpp" />
+    <ClCompile Include="FileHashing.cpp" />
     <ClCompile Include="Merkle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BlockChain.h" />
+    <ClInclude Include="FileHashing.h" />
     <ClInclude Include="Merkle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
