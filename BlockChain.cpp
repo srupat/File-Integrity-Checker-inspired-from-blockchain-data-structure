@@ -3,22 +3,29 @@
 #include "Merkle.h"
 
 
-Block* create_Block(Block* T1, int num_transactions) {
-    T1->numTransactions++;
+Block* create_Block(Block* T1, int num_transactions) {   
 
     Block* temp = T1;
+    Block* new_block = (Block*)malloc(sizeof(Block));
+    printf("Enter the priority of first block\n");
+    scanf_s("%d", &new_block->priority);
 
-    while (temp->link != NULL) {
+    T1->numTransactions++;
+
+    while (temp->link != NULL && new_block->priority <= temp->link->priority) {
         temp = temp->link;
     }
-    Block* new_block = (Block*)malloc(sizeof(Block));
+    
+    new_block->link = temp->link;
     temp->link = new_block;
-    new_block->link = NULL;
+    
 
     new_block->FileHashes = (char**)malloc(sizeof(char*) * num_transactions);
     for (int i = 0; i < num_transactions; i++) {
         new_block->FileHashes[i] = (char*)malloc(sizeof(char) * 100);
     }
+
+   
 
     new_block->numTransactions = num_transactions;
     new_block->transactions = (uint64_t*)malloc(sizeof(uint64_t) * num_transactions);
@@ -27,8 +34,13 @@ Block* create_Block(Block* T1, int num_transactions) {
     return new_block;
 }
 
-void configure_block(block* T1, block* T) {
+void configure_block(block* T1, block* T) // T1 -> first block , T-> second last block
+{
     block* temp = T1;
+    block* p = T1;
+    while (p->link != NULL && p->priority <= p->link->priority)
+        p = p->link;
+    T = p;
     while (temp->link != T) {
         temp = temp->link;
     }
@@ -71,6 +83,7 @@ void print_block(block* T) {
     printf("\nContents of created block...\n");
     printf("Previous Hash: %" PRIu64 "\n", T->prevHash);
     printf("Current Hash : %" PRIu64 "\n", T->currentHash);
+    printf("Priority : %d\n", T->priority);
     printf("List of file paths : \n");
     for (int i = 0; i < T->numTransactions; i++) {
         printf("File path %d: %s\n", i + 1, T->FileHashes[i]);

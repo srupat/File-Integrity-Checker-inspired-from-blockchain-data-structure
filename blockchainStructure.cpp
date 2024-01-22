@@ -19,6 +19,7 @@ int main() {
     T1->currentHash = 0;
     T1->prevHash = 0;
     T1->link = NULL;
+    T1->priority = -1;
     T1->transactions = NULL;
     T1->numTransactions = 0;
 
